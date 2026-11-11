@@ -1,0 +1,44 @@
+{
+    "name": "seomatic/craft-seomatic-ai",
+    "description": "Connect your Craft site to the SEOmatic SEO agent (seomatic.ai): entries, meta, schema, redirects and robots.txt over a key-authenticated API. Works on every Craft edition, no GraphQL needed.",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "keywords": ["craft", "craftcms", "craft-plugin", "seo", "seomatic", "redirects", "schema", "robots"],
+    "license": "MIT",
+    "homepage": "https://seomatic.ai",
+    "authors": [
+        {
+            "name": "SEOmatic",
+            "homepage": "https://seomatic.ai"
+        }
+    ],
+    "support": {
+        "docs": "https://github.com/Minh42/craft-seomatic-ai/blob/main/README.md",
+        "issues": "https://github.com/Minh42/craft-seomatic-ai/issues",
+        "source": "https://github.com/Minh42/craft-seomatic-ai"
+    },
+    "require": {
+        "php": ">=8.0.2",
+        "craftcms/cms": "^4.0.0 || ^5.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "seomatic\\craftai\\": "src/"
+        }
+    },
+    "extra": {
+        "handle": "seomatic-ai",
+        "name": "SEOmatic AI",
+        "developer": "SEOmatic",
+        "developerUrl": "https://seomatic.ai",
+        "documentationUrl": "https://github.com/Minh42/craft-seomatic-ai/blob/main/README.md",
+        "changelogUrl": "https://raw.githubusercontent.com/Minh42/craft-seomatic-ai/main/CHANGELOG.md",
+        "class": "seomatic\\craftai\\Plugin"
+    },
+    "config": {
+        "allow-plugins": {
+            "craftcms/plugin-installer": true,
+            "yiisoft/yii2-composer": true
+        }
+    }
+}

@@ -1,0 +1,80 @@
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{% set title = "SEOmatic AI" %}
+{% set selectedSubnavItem = null %}
+
+{% block content %}
+<div class="readable">
+    <h2>Connection key</h2>
+    <p>SEOmatic uses this key to read and update this site. Anyone with the key can edit entries, meta, schema, redirects and robots.txt through the plugin, so keep it private.</p>
+
+    <div class="flex" style="align-items: stretch; gap: 8px; margin-bottom: 8px;">
+        <input type="text" id="seomatic-ai-key" class="text code fullwidth" value="{{ key }}" readonly aria-label="Connection key" style="font-family: monospace;">
+        <button type="button" id="seomatic-ai-copy" class="btn submit">Copy</button>
+    </div>
+    <p id="seomatic-ai-copied" class="light" aria-live="polite" style="min-height: 1.5em;"></p>
+
+    <form method="post" accept-charset="UTF-8" onsubmit="return confirm('Create a new key? The current key stops working at once, and SEOmatic needs the new one.');">
+        {{ csrfInput() }}
+        {{ actionInput('seomatic-ai/settings/regenerate-key') }}
+        <button type="submit" class="btn">Regenerate key</button>
+    </form>
+
+    <hr>
+
+    <h2>How to connect</h2>
+    <ol style="list-style: decimal; padding-left: 1.5em;">
+        <li>Copy the key above.</li>
+        <li>Open <a href="https://app.seomatic.ai" target="_blank" rel="noopener">SEOmatic</a> and go to <strong>Connections &gt; Craft</strong>.</li>
+        <li>Enter this site's address ({{ siteUrl }}) and paste the key.</li>
+    </ol>
+    <p>No GraphQL schema, token or Craft Pro is needed: SEOmatic calls the plugin at <code>{{ apiBase }}</code>, on every Craft edition including Solo.</p>
+
+    <hr>
+
+    <h2>On this site</h2>
+    <ul style="list-style: disc; padding-left: 1.5em;">
+        <li>
+            {% if seomaticInstalled %}
+                nystudio107 SEOmatic is installed: SEO titles, descriptions, canonicals and noindex go into its <strong>SEO Settings</strong> field when an entry has one. Entries without that field get them from this plugin.
+            {% else %}
+                SEO titles, descriptions, canonicals and noindex that SEOmatic sets are added to each page's head by this plugin.
+            {% endif %}
+        </li>
+        <li>
+            robots.txt:
+            {% if robotsServedBy == 'seomatic' %}
+                served by nystudio107 SEOmatic; lines from SEOmatic AI are added at the end.
+            {% elseif robotsServedBy == 'none' %}
+                served by your own <code>robots.txt</code> template, which this plugin leaves alone.
+            {% else %}
+                served by this plugin once SEOmatic has saved lines for it; until then this site's robots.txt is untouched.
+            {% endif %}
+            A <code>robots.txt</code> file in your web folder takes precedence over both.
+        </li>
+        <li>Nothing changes on a page until SEOmatic stores something for it. Redirects, meta and schema are kept in this plugin's own database tables, not in project config.</li>
+    </ul>
+
+    <p class="light">SEOmatic AI {{ version }} &middot; <a href="https://seomatic.ai" target="_blank" rel="noopener">seomatic.ai</a></p>
+</div>
+{% endblock %}
+
+{% js %}
+(function () {
+    var btn = document.getElementById('seomatic-ai-copy');
+    var input = document.getElementById('seomatic-ai-key');
+    var note = document.getElementById('seomatic-ai-copied');
+    if (!btn || !input) { return; }
+    btn.addEventListener('click', function () {
+        var done = function () { note.textContent = 'Copied.'; };
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(input.value).then(done, function () {
+                input.select(); document.execCommand('copy'); done();
+            });
+        } else {
+            input.select(); document.execCommand('copy'); done();
+        }
+    });
+})();
+{% endjs %}
